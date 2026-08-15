@@ -8,6 +8,8 @@ import asyncio
 from aiogram.filters import Command
 from aiogram.types import Message, FSInputFile
 import logging
+from datetime import datetime
+import random
 
 
 token = config('BOT_TOKEN')
@@ -21,7 +23,7 @@ async def start_command(message: Message, bot: Bot):
 
 @router.message(Command('help'))
 async def help_command(message: Message):
-    await message.answer('/start - старт бота \n/help - помощник ')
+    await message.answer('/start - старт бота \n/help - помощник  \n/time - текущая дата и время \n/random - случайное число от 1 до 100  \n/joke - случайная шутка')
 
 @router.message(F.text == 'привет')
 async def hello_command(message: Message):
@@ -31,6 +33,35 @@ async def hello_command(message: Message):
 async def mem_command(message: Message, bot:Bot):
     photo = FSInputFile('media/mem-2.png')    
     await bot.send_photo(chat_id=message.chat.id, photo=photo)
+
+@router.message(Command("time"))
+async def cmd_time(message: Message):
+    now = datetime.now()
+    await message.answer(
+        f"Сейчас: {now.strftime('%d.%m.%Y %H:%M')}"
+    )
+ 
+
+@router.message(Command("random"))
+async def cmd_random(message: Message):
+    number = random.randint(1, 100)
+    await message.answer(f"Твоё случайное число: {number}")
+
+
+jokes = [
+   "Как физик расстаётся? Между нами больше нет притяжения.",
+   "Как математик делает комплимент? Ты — мой единственный плюс.",
+   "Как фотограф признаётся в любви? Ты в моём фокусе.",
+   "Как повар говорит «я тебя люблю»? Ты — приправа моей жизни.",
+   "Как географ говорит, что влюбился? Ты стала моим местом назначения."
+]
+
+
+@router.message(Command("joke"))
+async def cmd_joke(message: Message):
+    joke = random.choice(jokes)
+    await message.answer(joke)
+
 
 @router.message(F.text)
 async def echo(message:Message):
