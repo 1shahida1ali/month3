@@ -10,6 +10,8 @@ from aiogram.types import Message, FSInputFile
 import logging
 from datetime import datetime
 import random
+from handlers import fsm
+
 
 
 token = config('BOT_TOKEN')
@@ -72,10 +74,13 @@ async def main():
     logging.basicConfig(level=logging.INFO)
     bot = Bot(token=token)
     dp = Dispatcher()
+    dp.include_router(fsm.router_fsm)
     dp.include_router(router=router)
     await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
     asyncio.run(main())
+
+  
 
